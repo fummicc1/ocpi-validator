@@ -8,7 +8,7 @@ public struct Location: Codable {
   public let city: String
   public let postalCode: String
   public let country: String
-  public let coordinates: GeoLocation
+  public let coordinates: Coordinates
   public let relatedLocations: [AdditionalGeoLocation]?
   public let evses: [EVSE]?
   public let directions: [DisplayText]?
@@ -22,6 +22,11 @@ public struct Location: Codable {
   public let images: [Image]?
   public let energyMix: EnergyMix?
   public let lastUpdated: Date
+
+  public struct Coordinates: Codable {
+    public let latitude: String
+    public let longitude: String
+  }
 
   private enum CodingKeys: String, CodingKey {
     case id

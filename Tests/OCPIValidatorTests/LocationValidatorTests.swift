@@ -62,9 +62,13 @@ struct LocationValidatorTests {
         
         let result = try validator.validate(json)
         #expect(!result.isValid)
-        #expect(result.errors.count == 4)
+        #expect(result.errors.count == 5)
         #expect(result.errors.contains { error in
             if case .missingRequiredField("id") = error { return true }
+            return false
+        })
+        #expect(result.errors.contains { error in
+            if case .missingRequiredField("name") = error { return true }
             return false
         })
         #expect(result.errors.contains { error in
@@ -105,11 +109,11 @@ struct LocationValidatorTests {
         let result = try validator.validate(json)
         #expect(!result.isValid)
         #expect(result.errors.contains { error in
-            if case .invalidValue(field: "latitude", reason: "Must be between -90 and 90") = error { return true }
+            if case .invalidValue(field: "coordinates.latitude", reason: "Must be between -90 and 90") = error { return true }
             return false
         })
         #expect(result.errors.contains { error in
-            if case .invalidValue(field: "longitude", reason: "Must be between -180 and 180") = error { return true }
+            if case .invalidValue(field: "coordinates.longitude", reason: "Must be between -180 and 180") = error { return true }
             return false
         })
     }

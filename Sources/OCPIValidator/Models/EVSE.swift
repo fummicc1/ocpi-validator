@@ -106,6 +106,14 @@ public enum ConnectorType: String, Codable {
   case type1 = "TYPE_1"
   case type2 = "TYPE_2"
   case type3 = "TYPE_3"
+  case iec62196T1 = "IEC_62196_T1"
+  case iec62196T1Combo = "IEC_62196_T1_COMBO"
+  case iec62196T2 = "IEC_62196_T2"
+  case iec62196T2Combo = "IEC_62196_T2_COMBO"
+  case iec62196T3A = "IEC_62196_T3A"
+  case iec62196T3C = "IEC_62196_T3C"
+  case pantographBottom = "PANTOGRAPH_BOTTOM_UP"
+  case pantographTop = "PANTOGRAPH_TOP_DOWN"
 }
 
 public enum ConnectorFormat: String, Codable {

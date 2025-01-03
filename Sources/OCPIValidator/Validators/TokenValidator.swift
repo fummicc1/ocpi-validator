@@ -6,46 +6,36 @@ public struct TokenValidator {
     public func validate(_ jsonData: Data) throws -> ValidationResult {
         var errors: [ValidationError] = []
         
+        // First, validate required fields using dictionary
+        if let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] {
+            let requiredFields = ["uid", "type", "auth_id", "issuer", "valid", "whitelist", "last_updated"]
+            for field in requiredFields {
+                if json[field] == nil {
+                    errors.append(.missingRequiredField(field))
+                }
+            }
+        } else {
+            errors.append(.invalidJSON)
+            return ValidationResult(isValid: false, errors: errors)
+        }
+        
+        // If there are missing required fields, return early
+        if !errors.isEmpty {
+            return ValidationResult(isValid: false, errors: errors)
+        }
+        
+        // Then proceed with full decoding and validation
         do {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
             
             let token = try decoder.decode(Token.self, from: jsonData)
             
-            // Required fields validation
-            if token.uid.isEmpty {
-                errors.append(.missingRequiredField("uid"))
-            }
-            
-            if token.authId.isEmpty {
-                errors.append(.missingRequiredField("auth_id"))
-            }
-            
-            if token.issuer.isEmpty {
-                errors.append(.missingRequiredField("issuer"))
-            }
-            
-            // Type-specific validations
-            validateTypeSpecificFields(token, errors: &errors)
-            
-            // Language validation
-            if let language = token.language {
-                if !isValidLanguageCode(language) {
-                    errors.append(.invalidValue(
-                        field: "language",
-                        reason: "Invalid ISO 639-1 language code"
-                    ))
-                }
-            }
-            
-            // Whitelist validation
-            validateWhitelistConsistency(token, errors: &errors)
+            validateToken(token, errors: &errors)
             
         } catch {
             if let decodingError = error as? DecodingError {
                 switch decodingError {
-                case .keyNotFound(let key, _):
-                    errors.append(.missingRequiredField(key.stringValue))
                 case .typeMismatch(_, let context):
                     errors.append(.invalidFieldType(
                         field: context.codingPath.map { $0.stringValue }.joined(separator: "."),
@@ -60,6 +50,24 @@ public struct TokenValidator {
         }
         
         return ValidationResult(isValid: errors.isEmpty, errors: errors)
+    }
+    
+    private func validateToken(_ token: Token, errors: inout [ValidationError]) {
+        // Type-specific validations
+        validateTypeSpecificFields(token, errors: &errors)
+        
+        // Language validation
+        if let language = token.language {
+            if !isValidLanguageCode(language) {
+                errors.append(.invalidValue(
+                    field: "language",
+                    reason: "Invalid ISO 639-1 language code"
+                ))
+            }
+        }
+        
+        // Whitelist validation
+        validateWhitelistConsistency(token, errors: &errors)
     }
     
     private func validateTypeSpecificFields(_ token: Token, errors: inout [ValidationError]) {
