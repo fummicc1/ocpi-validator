@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ocpi-validator}",
+            "name": "Debug ocpi-validator",
+            "program": "${workspaceFolder:ocpi-validator}/.build/debug/ocpi-validator",
+            "preLaunchTask": "swift: Build Debug ocpi-validator"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ocpi-validator}",
+            "name": "Release ocpi-validator",
+            "program": "${workspaceFolder:ocpi-validator}/.build/release/ocpi-validator",
+            "preLaunchTask": "swift: Build Release ocpi-validator"
+        }
+    ]
+}

@@ -6,10 +6,10 @@
 //
 
 struct LocationValidator {
-    func validate(json: [String: Any]) throws {
-        let requiredFields = [
-            "id",
+  func validate(json: [String: Any]) throws {
+    let requiredFields = [
+      "id"
 
-        ]
-    }
+    ]
+  }
 }
