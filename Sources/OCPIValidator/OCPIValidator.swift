@@ -2,9 +2,17 @@ import Foundation
 
 public struct OCPIValidator {
   private let locationValidator: LocationValidator
+  private let tariffValidator: TariffValidator
+  private let cdrValidator: CDRValidator
+  private let sessionValidator: SessionValidator
+  private let tokenValidator: TokenValidator
 
   public init() {
     self.locationValidator = LocationValidator()
+    self.tariffValidator = TariffValidator()
+    self.cdrValidator = CDRValidator()
+    self.sessionValidator = SessionValidator()
+    self.tokenValidator = TokenValidator()
   }
 
   /// Validates OCPI JSON data
@@ -16,9 +24,14 @@ public struct OCPIValidator {
     switch type {
     case .location:
       return try locationValidator.validate(jsonData)
-    case .tariff, .session, .cdr, .token:
-      // TODO: Implement other validators
-      throw ValidationError.notImplemented
+    case .tariff:
+      return try tariffValidator.validate(jsonData)
+    case .cdr:
+      return try cdrValidator.validate(jsonData)
+    case .session:
+      return try sessionValidator.validate(jsonData)
+    case .token:
+      return try tokenValidator.validate(jsonData)
     }
   }
 }
