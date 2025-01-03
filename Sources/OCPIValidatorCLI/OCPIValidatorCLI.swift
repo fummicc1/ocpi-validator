@@ -4,7 +4,7 @@ import OCPIValidator
 
 @main
 struct OCPIValidatorCommand: ParsableCommand {
-  static var configuration = CommandConfiguration(
+  static let configuration = CommandConfiguration(
     commandName: "ocpi-validator",
     abstract: "A tool for validating OCPI JSON data",
     version: "1.0.0"
