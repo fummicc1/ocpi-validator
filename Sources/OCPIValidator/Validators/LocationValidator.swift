@@ -8,7 +8,9 @@ public struct LocationValidator {
 
     // First, validate required fields using dictionary
     if let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] {
-      let requiredFields = ["id", "type", "name", "address", "city", "country", "coordinates", "last_updated"]
+      let requiredFields = [
+        "id", "type", "name", "address", "city", "country", "coordinates", "last_updated",
+      ]
       for field in requiredFields {
         if json[field] == nil {
           errors.append(.missingRequiredField(field))
@@ -38,10 +40,13 @@ public struct LocationValidator {
           // Validate connectors if present
           if let connectors = evse["connectors"] as? [[String: Any]] {
             for (connectorIndex, connector) in connectors.enumerated() {
-              let requiredConnectorFields = ["id", "standard", "format", "power_type", "max_voltage", "max_amperage"]
+              let requiredConnectorFields = [
+                "id", "standard", "format", "power_type", "max_voltage", "max_amperage",
+              ]
               for field in requiredConnectorFields {
                 if connector[field] == nil {
-                  errors.append(.missingRequiredField("evses[\(index)].connectors[\(connectorIndex)].\(field)"))
+                  errors.append(
+                    .missingRequiredField("evses[\(index)].connectors[\(connectorIndex)].\(field)"))
                 }
               }
             }
@@ -71,10 +76,11 @@ public struct LocationValidator {
       if let decodingError = error as? DecodingError {
         switch decodingError {
         case .typeMismatch(_, let context):
-          errors.append(.invalidFieldType(
-            field: context.codingPath.map { $0.stringValue }.joined(separator: "."),
-            expectedType: context.debugDescription
-          ))
+          errors.append(
+            .invalidFieldType(
+              field: context.codingPath.map { $0.stringValue }.joined(separator: "."),
+              expectedType: context.debugDescription
+            ))
         default:
           errors.append(.invalidJSON)
         }
@@ -92,10 +98,11 @@ public struct LocationValidator {
 
     // Validate time zone if present
     if !isValidTimeZone(location.timeZone) {
-      errors.append(.invalidValue(
-        field: "time_zone",
-        reason: "Invalid time zone identifier"
-      ))
+      errors.append(
+        .invalidValue(
+          field: "time_zone",
+          reason: "Invalid time zone identifier"
+        ))
     }
 
     // Validate EVSEs
@@ -106,38 +113,45 @@ public struct LocationValidator {
     }
   }
 
-  private func validateCoordinates(_ coordinates: Location.Coordinates, errors: inout [ValidationError]) {
+  private func validateCoordinates(
+    _ coordinates: Location.Coordinates, errors: inout [ValidationError]
+  ) {
     if let latitude = Double(coordinates.latitude), latitude < -90 || latitude > 90 {
-      errors.append(.invalidValue(
-        field: "coordinates.latitude",
-        reason: "Must be between -90 and 90"
-      ))
+      errors.append(
+        .invalidValue(
+          field: "coordinates.latitude",
+          reason: "Must be between -90 and 90"
+        ))
     }
 
     if let longitude = Double(coordinates.longitude), longitude < -180 || longitude > 180 {
-      errors.append(.invalidValue(
-        field: "coordinates.longitude",
-        reason: "Must be between -180 and 180"
-      ))
+      errors.append(
+        .invalidValue(
+          field: "coordinates.longitude",
+          reason: "Must be between -180 and 180"
+        ))
     }
   }
 
   private func validateEVSE(_ evse: EVSE, index: Int, errors: inout [ValidationError]) {
     if evse.uid.isEmpty {
-        errors.append(.missingRequiredField("evses[\(index)].uid"))
+      errors.append(.missingRequiredField("evses[\(index)].uid"))
     }
-    
+
     if evse.connectors.isEmpty {
-        errors.append(.missingRequiredField("evses[\(index)].connectors"))
+      errors.append(.missingRequiredField("evses[\(index)].connectors"))
     }
-    
+
     // Validate connectors
     for (connectorIndex, connector) in evse.connectors.enumerated() {
-        validateConnector(connector, evseIndex: index, connectorIndex: connectorIndex, errors: &errors)
+      validateConnector(
+        connector, evseIndex: index, connectorIndex: connectorIndex, errors: &errors)
     }
   }
 
-  private func validateConnector(_ connector: Connector, evseIndex: Int, connectorIndex: Int, errors: inout [ValidationError]) {
+  private func validateConnector(
+    _ connector: Connector, evseIndex: Int, connectorIndex: Int, errors: inout [ValidationError]
+  ) {
     let prefix = "evses[\(evseIndex)].connectors[\(connectorIndex)]"
 
     if connector.id.isEmpty {
@@ -145,17 +159,19 @@ public struct LocationValidator {
     }
 
     if connector.maxVoltage <= 0 {
-      errors.append(.invalidValue(
-        field: "\(prefix).max_voltage",
-        reason: "Must be greater than 0"
-      ))
+      errors.append(
+        .invalidValue(
+          field: "\(prefix).max_voltage",
+          reason: "Must be greater than 0"
+        ))
     }
 
     if connector.maxAmperage <= 0 {
-      errors.append(.invalidValue(
-        field: "\(prefix).max_amperage",
-        reason: "Must be greater than 0"
-      ))
+      errors.append(
+        .invalidValue(
+          field: "\(prefix).max_amperage",
+          reason: "Must be greater than 0"
+        ))
     }
   }
 

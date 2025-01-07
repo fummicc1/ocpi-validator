@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
   name: "ocpi-validator",
   platforms: [
-    .macOS(.v13)
+    .macOS(.v14),
+    .iOS(.v17),
   ],
   products: [
     .library(

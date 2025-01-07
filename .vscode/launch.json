@@ -17,6 +17,24 @@
             "name": "Release ocpi-validator",
             "program": "${workspaceFolder:ocpi-validator}/.build/release/ocpi-validator",
             "preLaunchTask": "swift: Build Release ocpi-validator"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ocpi-validator}",
+            "name": "Debug OCPIValidatorApp",
+            "program": "${workspaceFolder:ocpi-validator}/.build/debug/OCPIValidatorApp",
+            "preLaunchTask": "swift: Build Debug OCPIValidatorApp"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ocpi-validator}",
+            "name": "Release OCPIValidatorApp",
+            "program": "${workspaceFolder:ocpi-validator}/.build/release/OCPIValidatorApp",
+            "preLaunchTask": "swift: Build Release OCPIValidatorApp"
         }
     ]
 }

@@ -1,0 +1,39 @@
+included:
+  - Sources
+  - Tests
+  - OCPIValidatorApp
+excluded:
+  - .build
+  - DerivedData
+
+opt_in_rules:
+  - empty_count
+  - empty_string
+  - explicit_init
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - missing_docs
+  - multiline_parameters
+  - vertical_whitespace
+
+line_length:
+  warning: 120
+  error: 150
+
+type_body_length:
+  warning: 300
+  error: 400
+
+file_length:
+  warning: 500
+  error: 700
+
+function_body_length:
+  warning: 50
+  error: 100
+
+cyclomatic_complexity:
+  warning: 10
+  error: 20
+
+reporter: "xcode" 
